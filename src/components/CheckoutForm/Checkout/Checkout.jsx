@@ -13,11 +13,19 @@ const Checkout = ({ cart, onCaptureCheckout, order, error }) => {
   const [checkoutToken, setCheckoutToken] = useState(null);
   const [activeStep, setActiveStep] = useState(0);
   const [shippingData, setShippingData] = useState({});
+  const [isFinished, setIsFinished] = useState(false);
   const classes = useStyles();
   const history = useHistory();
 
   const nextStep = () => setActiveStep((prevActiveStep) => prevActiveStep + 1);
   const backStep = () => setActiveStep((prevActiveStep) => prevActiveStep - 1);
+
+const timeout = () => {
+  setTimeout(() => {
+    setIsFinished(true);
+  }, 3000);
+}
+
 
   useEffect(() => {
     if (cart.id) {
@@ -35,6 +43,8 @@ const Checkout = ({ cart, onCaptureCheckout, order, error }) => {
     }
   }, [cart]);
 
+
+
   const test = (data) => {
     setShippingData(data);
 
@@ -44,12 +54,21 @@ const Checkout = ({ cart, onCaptureCheckout, order, error }) => {
   let Confirmation = () => (order.customer ? (
     <>
       <div>
-        <Typography variant="h5">Thank you for your purchase, {order.customer.firstname} {order.customer.lastname}!</Typography>
+        <Typography variant="h5">Дякуємо за покупку, {order.customer.firstname} {order.customer.lastname}!</Typography>
         <Divider className={classes.divider} />
         <Typography variant="subtitle2">Order ref: {order.customer_reference}</Typography>
       </div>
       <br />
-      <Button component={Link} variant="outlined" type="button" to="/">Back to home</Button>
+      <Button component={Link} variant="outlined" type="button" to="/">На головну сторінку</Button>
+    </>
+  ) : isFinished ? (
+    <>
+      <div>
+        <Typography variant="h5">Дякуємо за покупку</Typography>
+        <Divider className={classes.divider} />
+      </div>
+      <br />
+      <Button component={Link} variant="outlined" type="button" to="/">На головну сторінку</Button>
     </>
   ) : (
     <div className={classes.spinner}>
@@ -57,19 +76,22 @@ const Checkout = ({ cart, onCaptureCheckout, order, error }) => {
     </div>
   ));
 
-  if (error) {
-    Confirmation = () => (
-      <>
-        <Typography variant="h5">Error: {error}</Typography>
-        <br />
-        <Button component={Link} variant="outlined" type="button" to="/">Back to home</Button>
-      </>
-    );
-  }
+  // if (error) {
+  //   Confirmation = () => (
+  //     <>
+  //     <div>
+  //       <Typography variant="h5">Thank you for your purchase</Typography>
+  //       <Divider className={classes.divider} />
+  //     </div>
+  //     <br />
+  //     <Button component={Link} variant="outlined" type="button" to="/">Back to home</Button>
+  //   </>
+  //   );
+  // }
 
   const Form = () => (activeStep === 0
     ? <AddressForm checkoutToken={checkoutToken} nextStep={nextStep} setShippingData={setShippingData} test={test} />
-    : <PaymentForm checkoutToken={checkoutToken} nextStep={nextStep} backStep={backStep} shippingData={shippingData} onCaptureCheckout={onCaptureCheckout} />);
+    : <PaymentForm checkoutToken={checkoutToken} nextStep={nextStep} backStep={backStep} shippingData={shippingData} onCaptureCheckout={onCaptureCheckout} timeout={timeout} />);
 
   return (
     <>
@@ -77,7 +99,7 @@ const Checkout = ({ cart, onCaptureCheckout, order, error }) => {
       <div className={classes.toolbar} />
       <main className={classes.layout}>
         <Paper className={classes.paper}>
-          <Typography variant="h4" align="center">Checkout</Typography>
+          <Typography variant="h4" align="center">Замовлення</Typography>
           <Stepper activeStep={activeStep} className={classes.stepper}>
             {steps.map((label) => (
               <Step key={label}>

@@ -5,6 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 
 import logo from '../../assets/commerce.png';
 import useStyles from './styles';
+import { Button } from 'semantic-ui-react';
 
 const PrimarySearchAppBar = ({ totalItems }) => {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
@@ -35,9 +36,8 @@ const PrimarySearchAppBar = ({ totalItems }) => {
       <AppBar position="fixed" className={classes.appBar} color="inherit">
         <Toolbar>
           <Typography component={Link} to="/" variant="h6" className={classes.title} color="inherit">
-            <img src={logo} alt="commerce.js" height="25px" className={classes.image} /> Commerce.js
+            <img src={logo} alt="commerce.js" height="25px" className={classes.image} /> Магазин монет
           </Typography>
-          
           <div className={classes.grow} />
           {location.pathname === '/' && (
           <div className={classes.button}>
